@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <title>Hello Triangle!</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="program.js"></script>
+        <script type="text/javascript" src="shaders/test.vert"></script>
+        <script type="text/javascript" src="shaders/test.frag"></script>
+        <script type="text/javascript" src="gl-matrix.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+        <script type="text/javascript" src="ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="style.css"></style>
+        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <canvas width="640" height="480"></canvas>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="360" value="0" class="slider" id="cube_rotation">
+                    </div>
+                </div>
+                <div class="col">
+                    <button id="vertex-tab">Vertex Shader</button>
+                    <button id="fragment-tab">Fragment Shader</button>
+                    <div id="editor"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <style type="text/css" media="screen">
+    </style>
+    <script>
+        var cube_rotation = 0;
+        var slider = document.getElementById("cube_rotation");
+        slider.oninput = function() {
+            cube_rotation = slider.value;
+        }
+
+        // var vertex_shader = document.getElementById("vertex_shader");
+        // vertex_shader.innerHTML = test_vert;
+
+        var editor = ace.edit("editor");
+        editor.session.setNewLineMode("unix");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/glsl");
+        editor.setValue(test_vert);
+
+        var vertex_tab = document.getElementById("vertex-tab");
+        var vertex_session = editor.session;
+        var fragment_tab = document.getElementById("fragment-tab");
+        var fragment_session = ace.createEditSession(test_frag, "ace/mode/glsl");
+
+        vertex_tab.onclick = function() {
+            editor.setSession(vertex_session);
+        }
+
+        fragment_tab.onclick = function() {
+            editor.setSession(fragment_session);
+        }
+
+        function reload_shaders(event) {
+            var new_prog = new Program(prog.gl, vertex_session.getValue(), fragment_session.getValue());
+            if (new_prog.prog != null) {
+                prog = new_prog;
+            }
+        };
+
+        // vertex_session.on("change", reload_shaders);
+        editor.on("change", reload_shaders);
+
+        main();
+    </script>
+</html>
